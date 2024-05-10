@@ -1,26 +1,20 @@
 #include <iostream>
-#include "src/StationParser.hpp"
-#include "src/ConnectionParser.hpp"
-#include "src/Navigation.hpp"
+#include "MyMapper.hpp"
+#include "Navigation.hpp"
 
 int main() {
-    travel::StationParser stationParser;
-    travel::ConnectionParser connectionParser;
+    travel::MyMapper mapper;
 
     try {
-        // Load station data
-        stationParser.read_stations("src/data/s.csv");
-        std::cout << "Stations loaded successfully." << std::endl;
-
-        // Load connection data
-        connectionParser.read_connections("src/data/c.csv");
-        std::cout << "Connections loaded successfully." << std::endl;
+        // Load station and connection data
+        mapper.read_stations("src/data/s.csv");
+        mapper.read_connections("src/data/c.csv");
 
         // Print all stations
-        stationParser.print_all_stations();
+        mapper.print_all_stations();
 
         // Example: Calculate shortest path using Navigation class
-        travel::Navigation navigation(connectionParser.get_connections_hashmap());
+        travel::Navigation navigation(mapper.get_connections_hashmap());
 
         // Compute shortest path from station ID 1 to station ID 10
         uint64_t startStationId = 1629;
