@@ -22,11 +22,17 @@ namespace travel
 
     void Navigation::computeShortestPath(uint64_t start)
     {
+        std::fill(distance.begin(), distance.end(), std::numeric_limits<uint64_t>::max());
+        std::fill(previous.begin(), previous.end(), std::numeric_limits<uint64_t>::max());
+        while (!pq.empty())
+            pq.pop(); // Clear the priority queue
+
         if (connections_hashmap.find(start) == connections_hashmap.end())
         {
             std::cerr << "Error: Start node not found in connections." << std::endl;
             return;
         }
+
         distance[start] = 0;
         pq.push(std::make_pair(0, start));
 
