@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <limits>
 
 namespace travel {
 
@@ -28,6 +29,7 @@ void StationParser::read_stations(const std::string& filename) {
         try {
             uint64_t id = std::stoull(id_str);
             stations_hashmap[id] = station;
+            name_to_id_map[station.name + "|" + station.line_id] = id;  // Populate reverse lookup map
         } catch (const std::exception& e) {
             std::cerr << "Error parsing line: " << line << " - Exception: " << e.what() << std::endl;
         }
@@ -44,6 +46,32 @@ void StationParser::print_all_stations() const {
                   << ", Line ID: " << station.line_id
                   << ", Address: " << station.address
                   << ", Line Name: " << station.line_name << std::endl;
+    }
+}
+
+uint64_t StationParser::get_station_id_by_name_and_line(const std::string& name, const std::string& line) {
+    std::string key = name + "|" + line;
+    auto it = name_to_id_map.find(key);
+    if (it != name_to_id_map.end()) {
+        return it->second;
+    }
+    return std::numeric_limits<uint64_t>::max();
+}
+
+std::string StationParser::get_station_name_by_id(uint64_t id) const {
+    auto it = stations_hashmap.find(id);
+    if (it != stations_hashmap.end()) {
+        return it->second.name; // Return the name of the station
+    } else {
+        return "Station ID not found"; // Return error message if ID not found
+    }
+}
+Station StationParser::get_station_by_id(uint64_t id) const {
+    auto it = stations_hashmap.find(id);
+    if (it != stations_hashmap.end()) {
+        return it->second;
+    } else {
+        throw std::runtime_error("Station ID not found"); // Throw an error if the ID is not found
     }
 }
 
