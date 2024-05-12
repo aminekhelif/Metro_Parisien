@@ -70,8 +70,13 @@ int main() {
         auto path = navigation->getShortestPath(endStationId);
         std::cout << "Shortest Path from " << startStationName << " to " << endStationName << ":" << std::endl;
         for (auto station_id : path) {
-            const auto& station = metroNetworkParser.get_station_by_id(station_id);
-            std::cout << station.name << " (Line " << station.line_id << ")" << std::endl;
+            try {
+                const auto& station = metroNetworkParser.get_station_by_id(station_id);
+                std::cout << station.name << " (Line " << station.line_id << ")" << std::endl;
+            } catch (const std::exception& e) {
+                std::cerr << "Exception caught: " << e.what() << std::endl;
+                // Handle or break the loop as necessary
+            }
         }
 
         // Display the total distance of the path

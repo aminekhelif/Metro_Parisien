@@ -18,15 +18,17 @@ Navigation::Navigation(MetroNetworkParser& parser)
 
 
 void Navigation::computeShortestPath(const std::string& startName, const std::string& startLine) {
+
     std::fill(distance.begin(), distance.end(), std::numeric_limits<uint64_t>::max());
     std::fill(previous.begin(), previous.end(), std::numeric_limits<uint64_t>::max());
     while (!pq.empty())
         pq.pop(); // Clear the priority queue
 
     uint64_t startId = metroNetworkParser.get_station_id_by_name_and_line(startName, startLine);
+    std::cout << "Looking up connections for ID: " << startId << std::endl;
 
-    if (connections_hashmap.find(startId) == connections_hashmap.end()) {
-        std::cerr << "Error: Start node not found in connections." << std::endl;
+    if (connections_hashmap.find(startId) == connections_hashmap.end() || connections_hashmap.at(startId).empty()) {
+        std::cerr << "Error: Start node not found in connections or no connections available." << std::endl;
         return;
     }
 
@@ -39,8 +41,9 @@ void Navigation::computeShortestPath(const std::string& startName, const std::st
 
         if (distance[u] != pq.top().first) continue;
 
-        if (connections_hashmap.find(u) != connections_hashmap.end()) {
-            for (const auto &pair : connections_hashmap.at(u)) {
+        auto it = connections_hashmap.find(u);
+        if (it != connections_hashmap.end()) {
+            for (const auto &pair : it->second) {
                 uint64_t v = pair.first;
                 uint64_t w = pair.second;
 
@@ -53,6 +56,7 @@ void Navigation::computeShortestPath(const std::string& startName, const std::st
         }
     }
 }
+
 
 void Navigation::printShortestPath(const std::string& endName, const std::string& endLine) const {
     uint64_t endId = metroNetworkParser.get_station_id_by_name_and_line(endName, endLine);

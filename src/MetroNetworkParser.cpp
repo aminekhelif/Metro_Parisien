@@ -45,11 +45,13 @@ void MetroNetworkParser::read_stations(const std::string& filename) {
             uint64_t id = std::stoull(id_str);
             stations_hashmap[id] = station;
             name_to_id_map[station.name + "|" + station.line_id] = id;
+            std::cout << "Loaded station: " << station.name << " ID: " << id << std::endl;
         } catch (const std::exception& e) {
             std::cerr << "Error parsing line: " << line << " - Exception: " << e.what() << std::endl;
         }
     }
     file.close();
+    
 }
 
 // Reads connection data from a file and populates the connections_hashmap
