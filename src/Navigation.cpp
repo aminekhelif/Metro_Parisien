@@ -10,7 +10,6 @@ Navigation::Navigation(MetroNetworkParser& parser)
     for (const auto &entry : connections_hashmap) {
         max_node_id = std::max(max_node_id, entry.first);
         for (const auto &neighbor : entry.second) {
-            std::cout << neighbor.first << " ";
             max_node_id = std::max(max_node_id, neighbor.first);
         }
     }
@@ -19,55 +18,45 @@ Navigation::Navigation(MetroNetworkParser& parser)
 }
 
 
-void Navigation::computeShortestPath(const std::string& startName, const std::string& startLine) {
-
-    // Check if start node has outgoing connections
-    // if (connections_hashmap.find(startId) == connections_hashmap.end() || connections_hashmap.at(startId).empty()) {
-    //     std::cerr << "No outgoing connections for start node " << startId << "." << std::endl;
-    //     return;
-    // }
-    
-
-    // Proceed with Dijkstra's algorithm
-    std::fill(distance.begin(), distance.end(), std::numeric_limits<uint64_t>::max());
-    std::fill(previous.begin(), previous.end(), std::numeric_limits<uint64_t>::max());
-    while (!pq.empty())
-        pq.pop(); // Clear the priority queue
-        
-    uint64_t startId = metroNetworkParser.get_station_id_by_name_and_line(startName, startLine);
-    std::cout << "Looking up connections for ID: " << startId << std::endl;
-    
-    
-    if (connections_hashmap.find(startId) == connections_hashmap.end()) 
-        {
-            std::cerr << "Error: Start node not found in connections." << std::endl;
-            return;
-        }
-
-    distance[startId] = 0;
-    pq.push(std::make_pair(0, startId));
-
-    while (!pq.empty())
+ void Navigation::computeShortestPath(const std::string& startName, const std::string& startLine) 
     {
-        uint64_t u = pq.top().second;
-        pq.pop();
-    if (connections_hashmap.find(u) != connections_hashmap.end()) {
-    
-        for (const auto &pair : connections_hashmap.at(u))
+        std::fill(distance.begin(), distance.end(), std::numeric_limits<uint64_t>::max());
+        std::fill(previous.begin(), previous.end(), std::numeric_limits<uint64_t>::max());
+        while (!pq.empty())
+            pq.pop(); // Clear the priority queue
+        uint64_t startId = metroNetworkParser.get_station_id_by_name_and_line(startName, startLine);
+        
+
+        distance[startId] = 0;
+        pq.push(std::make_pair(0, startId));
+
+        while (!pq.empty())
         {
-                uint64_t v = pair.first;
-                uint64_t w = pair.second;
+            uint64_t u = pq.top().second;
+            std::cout << "Popping " << metroNetworkParser.get_station_name_by_id(u) << std::endl;
+            pq.pop();
 
-            if (distance[v] > distance[u] + w)
+        
+        if (connections_hashmap.find(u) != connections_hashmap.end()) {
+            std::cout << "Connections found for " << metroNetworkParser.get_station_name_by_id(u) << std::endl;
+            for (const auto &pair : connections_hashmap.at(u))
             {
-                    distance[v] = distance[u] + w;
-                    previous[v] = u;
-                    pq.push(std::make_pair(distance[v], v));
-                }
-        }}
-    }
-    }
+                    uint64_t v = pair.first;
+                    uint64_t w = pair.second;
 
+                if (distance[v] > distance[u] + w)
+                {
+                        distance[v] = distance[u] + w;
+                        previous[v] = u;
+                        pq.push(std::make_pair(distance[v], v));
+                    }
+            }
+            }
+        else{
+            std::cerr << "Error: Node not found in connections." << std::endl;
+        }
+        }
+    }
 
 
 void Navigation::printShortestPath(const std::string& endName, const std::string& endLine) const {
