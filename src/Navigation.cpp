@@ -5,10 +5,12 @@ namespace travel {
 
 Navigation::Navigation(MetroNetworkParser& parser)
 : metroNetworkParser(parser), connections_hashmap(parser.get_connections_hashmap()) {
+    std::cout << "Navigation constructor called" << std::endl;
     uint64_t max_node_id = 0;
     for (const auto &entry : connections_hashmap) {
         max_node_id = std::max(max_node_id, entry.first);
         for (const auto &neighbor : entry.second) {
+            std::cout << neighbor.first << " ";
             max_node_id = std::max(max_node_id, neighbor.first);
         }
     }
@@ -18,18 +20,31 @@ Navigation::Navigation(MetroNetworkParser& parser)
 
 
 void Navigation::computeShortestPath(const std::string& startName, const std::string& startLine) {
+    uint64_t startId = metroNetworkParser.get_station_id_by_name_and_line(startName, startLine);
 
+    // Check if start node has outgoing connections
+    // if (connections_hashmap.find(startId) == connections_hashmap.end() || connections_hashmap.at(startId).empty()) {
+    //     std::cerr << "No outgoing connections for start node " << startId << "." << std::endl;
+    //     return;
+    // }
+    
+
+    // Proceed with Dijkstra's algorithm
     std::fill(distance.begin(), distance.end(), std::numeric_limits<uint64_t>::max());
     std::fill(previous.begin(), previous.end(), std::numeric_limits<uint64_t>::max());
     while (!pq.empty())
         pq.pop(); // Clear the priority queue
 
-    uint64_t startId = metroNetworkParser.get_station_id_by_name_and_line(startName, startLine);
     std::cout << "Looking up connections for ID: " << startId << std::endl;
-
-    if (connections_hashmap.find(startId) == connections_hashmap.end() || connections_hashmap.at(startId).empty()) {
-        std::cerr << "Error: Start node not found in connections or no connections available." << std::endl;
-        return;
+    // Print connections for debug purposes
+    if (connections_hashmap.find(startId) != connections_hashmap.end()) {
+        std::cout << "Connections available for " << startId << ": ";
+        for (const auto& conn : connections_hashmap.at(startId)) {
+            std::cout << conn.first << " (duration " << conn.second << "), ";
+        }
+        std::cout << std::endl;
+    }else {
+        std::cout << "No connections available for " << startId << std::endl;
     }
 
     distance[startId] = 0;
@@ -56,6 +71,7 @@ void Navigation::computeShortestPath(const std::string& startName, const std::st
         }
     }
 }
+
 
 
 void Navigation::printShortestPath(const std::string& endName, const std::string& endLine) const {

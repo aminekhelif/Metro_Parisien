@@ -43,9 +43,6 @@ bool getUserInput(const std::string& prompt, std::string& stationName, std::stri
     }
 }
 
-
-// Assume other functions are correctly implemented...
-
 int main() {
     // Initialize the parser for stations and connections and load data
     travel::MetroNetworkParser metroNetworkParser;
@@ -62,34 +59,39 @@ int main() {
             std::cout << "Exiting program.\n";
             break;
         }
-
+        std::cout << "valide input\n";
         travel::Navigation* navigation = metroNetworkParser.getNavigation();
         // Calculate and display the shortest path between the given stations
-        navigation->computeShortestPath(startStationName, startStationLine);
-        uint64_t endStationId = metroNetworkParser.get_station_id_by_name_and_line(endStationName, endStationLine);
-        auto path = navigation->getShortestPath(endStationId);
-        std::cout << "Shortest Path from " << startStationName << " to " << endStationName << ":" << std::endl;
-        for (auto station_id : path) {
-            try {
-                const auto& station = metroNetworkParser.get_station_by_id(station_id);
-                std::cout << station.name << " (Line " << station.line_id << ")" << std::endl;
-            } catch (const std::exception& e) {
-                std::cerr << "Exception caught: " << e.what() << std::endl;
-                // Handle or break the loop as necessary
+        // try {
+            navigation->computeShortestPath(startStationName, startStationLine);
+            uint64_t endStationId = metroNetworkParser.get_station_id_by_name_and_line(endStationName, endStationLine);
+            std::cout << "endStationId: " << endStationId << std::endl;
+            auto path = navigation->getShortestPath(endStationId);
+            std::cout << "Shortest Path from " << startStationName << " to " << endStationName << ":" << std::endl;
+            for (auto station_id : path) {
+                try {
+                    const auto& station = metroNetworkParser.get_station_by_id(station_id);
+                    std::cout << station.name << " (Line " << station.line_id << ")" << std::endl;
+                } catch (const std::exception& e) {
+                    std::cerr << "Exception caught: " << e.what() << std::endl;
+                    // Handle or break the loop as necessary
+                }
             }
-        }
+            // Display the total distance of the path
+            std::cout << "Total Distance: " << navigation->getShortestDistance(endStationId) << " units" << std::endl;
 
-        // Display the total distance of the path
-        std::cout << "Total Distance: " << navigation->getShortestDistance(endStationId) << " units" << std::endl;
-
-        // Prompt for another search
-        std::cout << "Do you want to search for another path? (yes to continue): ";
-        std::string answer;
-        getline(std::cin, answer);
-        if (answer != "yes") {
-            std::cout << "Exiting program.\n";
-            break;
-        }
+            // Prompt for another search
+            std::cout << "Do you want to search for another path? (yes to continue): ";
+            std::string answer;
+            getline(std::cin, answer);
+            if (answer != "yes") {
+                std::cout << "Exiting program.\n";
+                break;
+            }
+        // } catch (const std::exception& e) {
+            // std::cerr << "Error: " << e.what() << std::endl;
+            // Handle or display the error as necessary
+        // }
     }
 
     return 0;

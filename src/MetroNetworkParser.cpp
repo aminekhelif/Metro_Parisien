@@ -18,8 +18,11 @@ MetroNetworkParser::~MetroNetworkParser() {
 void MetroNetworkParser::initializeData() {
     read_stations("src/data/s.csv");
     read_connections("src/data/c.csv");
-    navigation = new Navigation(*this);  // Properly initialize navigation
-}
+    // Ensure that all station and connection data is loaded before initializing the Navigation object.
+    if (!navigation) {
+        navigation = new Navigation(*this);  // Properly initialize navigation after all data is loaded
+    }
+    }
 
 
 // Reads station data from a file and populates the stations_hashmap
@@ -70,18 +73,31 @@ void MetroNetworkParser::read_connections(const std::string& filename) {
         std::getline(iss, end_id_str, ',');
         std::getline(iss, duration_str, ',');
 
-        try {
+        // try {
             uint64_t start_id = std::stoull(start_id_str);
             uint64_t end_id = std::stoull(end_id_str);
             uint64_t duration = std::stoull(duration_str);
 
             connections_hashmap[start_id][end_id] = duration;
-        } catch (const std::exception& e) {
-            std::cerr << "Error parsing line: " << line << " - Exception: " << e.what() << std::endl;
-        }
+
+            // Debug output
+            // std::cout << "Connection from " << start_id << " to " << end_id << " with duration " << duration << " loaded." << std::endl;
+        // } catch (const std::exception& e) {
+        //     std::cerr << "Error parsing line: " << line << " - Exception: " << e.what() << std::endl;
+        // }
     }
     file.close();
+
+    // Print the entire connections hashmap for verification
+    // for (const auto& conn : connections_hashmap) {
+    //     std::cout << "Station " << conn.first << " connects to: ";
+    //     for (const auto& dest : conn.second) {
+    //         std::cout << dest.first << " (duration " << dest.second << "), ";
+    //     }
+    //     std::cout << std::endl;
+    // }
 }
+
 
 // Computes the shortest path between two station IDs and returns it as a list of ID pairs representing segments of the journey
 std::vector<std::pair<uint64_t, uint64_t>> MetroNetworkParser::compute_travel(uint64_t start, uint64_t end) {
@@ -110,9 +126,10 @@ uint64_t MetroNetworkParser::get_station_id_by_name_and_line(const std::string& 
     std::string key = name + "|" + line;
     auto it = name_to_id_map.find(key);
     if (it != name_to_id_map.end()) {
+        // std::cout << "Station ID found: " << it->second << std::endl;
         return it->second;
     }
-    return std::numeric_limits<uint64_t>::max(); // Return a max value to indicate not found
+    throw std::runtime_error("Station ID not found");
 }
 
 // Returns the station name given an ID

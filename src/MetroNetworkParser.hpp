@@ -15,7 +15,7 @@ namespace travel {
     class Navigation;  // Forward declaration
 
     class MetroNetworkParser : public Generic_mapper {
-    private:
+    // private:
         std::unordered_map<uint64_t, Station> stations_hashmap;
         std::unordered_map<std::string, uint64_t> name_to_id_map;
         std::unordered_map<uint64_t, std::unordered_map<uint64_t, uint64_t>> connections_hashmap;
