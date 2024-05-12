@@ -2,17 +2,19 @@
 #ifndef NAVIGATION_HPP
 #define NAVIGATION_HPP
 
-#include "MetroNetworkParser.hpp"
 #include <vector>
 #include <queue>
 #include <limits>
 #include <iostream>
 #include <algorithm>
+#include <unordered_map>
 
 namespace travel {
+    class MetroNetworkParser;  // Forward declaration
+
     class Navigation {
     public:
-        Navigation(MetroNetworkParser &parser);
+        explicit Navigation(MetroNetworkParser &parser);
         void computeShortestPath(const std::string& startName, const std::string& startLine);
         void printShortestPath(const std::string& endName, const std::string& endLine) const;
         uint64_t getShortestDistance(uint64_t end) const;
@@ -25,6 +27,6 @@ namespace travel {
         std::priority_queue<std::pair<uint64_t, uint64_t>, std::vector<std::pair<uint64_t, uint64_t>>, std::greater<std::pair<uint64_t, uint64_t>>> pq;
         MetroNetworkParser &metroNetworkParser;
     };
-} // namespace travel
+}
 
 #endif // NAVIGATION_HPP

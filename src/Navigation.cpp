@@ -1,4 +1,5 @@
 #include "Navigation.hpp"
+#include "MetroNetworkParser.hpp"
 
 namespace travel {
 
@@ -14,6 +15,7 @@ Navigation::Navigation(MetroNetworkParser& parser)
     distance.resize(max_node_id + 1, std::numeric_limits<uint64_t>::max());
     previous.resize(max_node_id + 1, std::numeric_limits<uint64_t>::max());
 }
+
 
 void Navigation::computeShortestPath(const std::string& startName, const std::string& startLine) {
     std::fill(distance.begin(), distance.end(), std::numeric_limits<uint64_t>::max());
