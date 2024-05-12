@@ -20,7 +20,6 @@ Navigation::Navigation(MetroNetworkParser& parser)
 
 
 void Navigation::computeShortestPath(const std::string& startName, const std::string& startLine) {
-    uint64_t startId = metroNetworkParser.get_station_id_by_name_and_line(startName, startLine);
 
     // Check if start node has outgoing connections
     // if (connections_hashmap.find(startId) == connections_hashmap.end() || connections_hashmap.at(startId).empty()) {
@@ -34,43 +33,40 @@ void Navigation::computeShortestPath(const std::string& startName, const std::st
     std::fill(previous.begin(), previous.end(), std::numeric_limits<uint64_t>::max());
     while (!pq.empty())
         pq.pop(); // Clear the priority queue
-
+        
+    uint64_t startId = metroNetworkParser.get_station_id_by_name_and_line(startName, startLine);
     std::cout << "Looking up connections for ID: " << startId << std::endl;
-    // Print connections for debug purposes
-    if (connections_hashmap.find(startId) != connections_hashmap.end()) {
-        std::cout << "Connections available for " << startId << ": ";
-        for (const auto& conn : connections_hashmap.at(startId)) {
-            std::cout << conn.first << " (duration " << conn.second << "), ";
+    
+    
+    if (connections_hashmap.find(startId) == connections_hashmap.end()) 
+        {
+            std::cerr << "Error: Start node not found in connections." << std::endl;
+            return;
         }
-        std::cout << std::endl;
-    }else {
-        std::cout << "No connections available for " << startId << std::endl;
-    }
 
     distance[startId] = 0;
-    pq.push({0, startId});
+    pq.push(std::make_pair(0, startId));
 
-    while (!pq.empty()) {
+    while (!pq.empty())
+    {
         uint64_t u = pq.top().second;
         pq.pop();
-
-        if (distance[u] != pq.top().first) continue;
-
-        auto it = connections_hashmap.find(u);
-        if (it != connections_hashmap.end()) {
-            for (const auto &pair : it->second) {
+    if (connections_hashmap.find(u) != connections_hashmap.end()) {
+    
+        for (const auto &pair : connections_hashmap.at(u))
+        {
                 uint64_t v = pair.first;
                 uint64_t w = pair.second;
 
-                if (distance[v] > distance[u] + w) {
+            if (distance[v] > distance[u] + w)
+            {
                     distance[v] = distance[u] + w;
                     previous[v] = u;
-                    pq.push({distance[v], v});
+                    pq.push(std::make_pair(distance[v], v));
                 }
-            }
-        }
+        }}
     }
-}
+    }
 
 
 
