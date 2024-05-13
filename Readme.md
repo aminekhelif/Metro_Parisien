@@ -1,16 +1,18 @@
 
 # PARISSUBWAY
+<!-- insert image -->
+![Paris Subway](src/data/PARISSUBWAY.png)
 
 ## Description
 
-This repository features a route planning algorithm specifically tailored for the Parisian subway system, leveraging the RATP network. It incorporates both static and dynamic heuristics to optimize travel times efficiently. The project showcases the algorithm's effectiveness through an interactive, user-friendly interface, employing a robust and realistic dataset to demonstrate its capabilities in real-world scenarios.
+This repository features a route planning algorithm tailored specifically for the Parisian subway system, utilizing the RATP network. The algorithm employs both static and dynamic heuristics to efficiently optimize travel times. It showcases its effectiveness through an interactive interface and demonstrates its capabilities in real-world scenarios using a robust and realistic dataset
 
 ## Features
 
 ### Interactive User Experience
 - **User Interaction Loop:** The user remains engaged through a continuous interaction loop, allowing for seamless operation of the program. Users can easily exit the program by typing "exit".
 - **Simplified Navigation:** Users can initiate searches by simply entering the station name and the line number of the departure and arrival stations to discover the shortest path between them.
-- **Decision-Making Power:** After completing a search, users are presented with the option to conduct another search or exit the program, ensuring a user-friendly experience.
+- **Decision-Making :** After completing a search, users are presented with the option to conduct another search or exit the program, ensuring a user-friendly experience.
 
 ### Station Finder Assistant
 - **Error Handling and Suggestions:** If a user enters a non-existent station name, the program intelligently suggests the closest matching station. This feature is designed with a straightforward and efficient algorithm, eliminating the need for additional downloads or libraries.
