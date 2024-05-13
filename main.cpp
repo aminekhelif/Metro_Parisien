@@ -1,7 +1,16 @@
+/**
+ * @file main.cpp
+ * @brief This file contains the main function and related functions for the Metro Network program.
+ */
+
 #include "src/MetroNetworkParser.hpp"
 #include "src/Navigation.hpp"
 
-// // Function to normalize the input string by converting it to lowercase and removing punctuation.
+/**
+ * @brief Function to normalize the input string by converting it to lowercase and removing punctuation.
+ * @param input The input string to be normalized.
+ * @return The normalized string.
+ */
 std::string normalize(const std::string &input)
 {
     std::string result;
@@ -16,8 +25,14 @@ std::string normalize(const std::string &input)
     return result;
 }
 
-
-
+/**
+ * @brief Function to get user input for station name and line, and validate it against the database.
+ * @param prompt The prompt message to display to the user.
+ * @param stationName Reference to a string variable to store the entered station name.
+ * @param line Reference to a string variable to store the entered line.
+ * @param metroNetworkParser The MetroNetworkParser object used to validate the input against the database.
+ * @return True if the station and line are valid, false if the user chooses to exit.
+ */
 bool updated_getUserInput(const std::string &prompt, std::string &stationName, std::string &line, const travel::MetroNetworkParser &metroNetworkParser)
 {
     // explain exit option
@@ -38,9 +53,9 @@ bool updated_getUserInput(const std::string &prompt, std::string &stationName, s
         {            
             uint64_t stationId = metroNetworkParser.get_station_id_by_name_and_line(stationName, line);
             if (stationId != std::numeric_limits<uint64_t>::max())
-                {
-                    return true; // Station and line are valid
-                }
+            {
+                return true; // Station and line are valid
+            }
         }
         catch(const std::exception& e)
         {
@@ -62,6 +77,11 @@ bool updated_getUserInput(const std::string &prompt, std::string &stationName, s
         }   
     }
 }
+
+/**
+ * @brief The main function of the Metro Network program.
+ * @return 0 on successful execution.
+ */
 int main()
 {
     travel::MetroNetworkParser metroNetworkParser;
@@ -78,11 +98,6 @@ int main()
             std::cout << "Exiting program.\n";
             break;
         }
-
-        // std::string startStationName = "Villiers";
-        // std::string startStationLine = "2";
-        // std::string endStationName = "La Chapelle";
-        // std::string endStationLine = "2";
 
         std::cout << "valide input\n";
 
