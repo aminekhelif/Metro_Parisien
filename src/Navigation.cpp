@@ -9,7 +9,7 @@ namespace travel {
  * @param parser The MetroNetworkParser object used for parsing the metro network.
  */
 Navigation::Navigation(MetroNetworkParser& parser)
-: metroNetworkParser(parser), connections_hashmap(parser.connections_hashmap) {
+: connections_hashmap(parser.connections_hashmap), metroNetworkParser(parser) {
     std::cout << "Navigation constructor called" << std::endl;
     uint64_t max_node_id = 0;
     for (const auto &entry : connections_hashmap) {
