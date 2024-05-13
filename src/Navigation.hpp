@@ -20,7 +20,7 @@ namespace travel {
         uint64_t getShortestDistance(uint64_t end) const;
         std::vector<uint64_t> getShortestPath(uint64_t end) const;
 
-    // private:
+    private:
         const std::unordered_map<uint64_t, std::unordered_map<uint64_t, uint64_t>>& connections_hashmap;
         std::vector<uint64_t> distance;
         std::vector<uint64_t> previous;

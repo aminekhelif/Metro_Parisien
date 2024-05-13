@@ -15,7 +15,6 @@ namespace travel {
     class Navigation;  // Forward declaration
 
     class MetroNetworkParser : public Generic_mapper {
-    // private:
        
     public:
         MetroNetworkParser();
