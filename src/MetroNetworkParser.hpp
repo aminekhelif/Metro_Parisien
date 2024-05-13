@@ -16,11 +16,7 @@ namespace travel {
 
     class MetroNetworkParser : public Generic_mapper {
     // private:
-        std::unordered_map<uint64_t, Station> stations_hashmap;
-        std::unordered_map<std::string, uint64_t> name_to_id_map;
-        std::unordered_map<uint64_t, std::unordered_map<uint64_t, uint64_t>> connections_hashmap;
-        Navigation* navigation;  // Pointer to Navigation
-
+       
     public:
         MetroNetworkParser();
         ~MetroNetworkParser();
@@ -38,6 +34,12 @@ namespace travel {
         std::vector<std::pair<std::string, std::string>> searchStations(const std::string &input) const;
 
         Navigation* getNavigation() const { return navigation; }  // Accessor for navigation
+
+        std::unordered_map<uint64_t, Station> stations_hashmap;
+        std::unordered_map<std::string, uint64_t> name_to_id_map;
+        std::unordered_map<uint64_t, std::unordered_map<uint64_t, uint64_t>> connections_hashmap;
+        Navigation* navigation;  // Pointer to Navigation
+
     };
 
 } // namespace travel

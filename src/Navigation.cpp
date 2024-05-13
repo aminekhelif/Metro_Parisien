@@ -4,7 +4,7 @@
 namespace travel {
 
 Navigation::Navigation(MetroNetworkParser& parser)
-: metroNetworkParser(parser), connections_hashmap(parser.get_connections_hashmap()) {
+: metroNetworkParser(parser), connections_hashmap(parser.connections_hashmap) {
     std::cout << "Navigation constructor called" << std::endl;
     uint64_t max_node_id = 0;
     for (const auto &entry : connections_hashmap) {
@@ -33,12 +33,12 @@ Navigation::Navigation(MetroNetworkParser& parser)
         while (!pq.empty())
         {
             uint64_t u = pq.top().second;
-            std::cout << "Popping " << metroNetworkParser.get_station_name_by_id(u) << std::endl;
+            // std::cout << "Popping " << metroNetworkParser.get_station_name_by_id(u) << std::endl;
             pq.pop();
 
         
         if (connections_hashmap.find(u) != connections_hashmap.end()) {
-            std::cout << "Connections found for " << metroNetworkParser.get_station_name_by_id(u) << std::endl;
+            // std::cout << "Connections found for " << metroNetworkParser.get_station_name_by_id(u) << std::endl;
             for (const auto &pair : connections_hashmap.at(u))
             {
                     uint64_t v = pair.first;
