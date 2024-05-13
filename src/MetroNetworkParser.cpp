@@ -4,26 +4,40 @@
 
 namespace travel {
 
+/**
+ * Constructor for the MetroNetworkParser class.
+ * Initializes the MetroNetworkParser object and calls the initializeData() function.
+ */
 MetroNetworkParser::MetroNetworkParser(){
     std::cout << "MetroNetworkParser constructor called" << std::endl;
     initializeData();
 }
 
+/**
+ * Destructor for the MetroNetworkParser class.
+ * Deletes the navigation object to properly free memory.
+ */
 MetroNetworkParser::~MetroNetworkParser() {
     delete navigation;  // Properly delete navigation
 }
 
+/**
+ * Initializes the data for the MetroNetworkParser object.
+ * Reads station and connection data from files and populates the corresponding hashmaps.
+ * Initializes the navigation object after all data is loaded.
+ */
 void MetroNetworkParser::initializeData() {
     read_stations("src/data/s.csv");
     read_connections("src/data/c.csv");
     navigation = new Navigation(*this);  // Properly initialize navigation after all data is loaded
+}
 
-    }
-
-
-// Reads station data from a file and populates the stations_hashmap
+/**
+ * Reads station data from a file and populates the stations_hashmap.
+ * @param filename The name of the file to read the station data from.
+ */
 void MetroNetworkParser::read_stations(const std::string& filename) {
-    std::ifstream file(filename);
+ std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Error opening file: " << filename << std::endl;
         return;
@@ -53,7 +67,10 @@ void MetroNetworkParser::read_stations(const std::string& filename) {
     
 }
 
-// Reads connection data from a file and populates the connections_hashmap
+/**
+ * Reads connection data from a file and populates the connections_hashmap.
+ * @param filename The name of the file to read the connection data from.
+ */
 void MetroNetworkParser::read_connections(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -95,10 +112,14 @@ void MetroNetworkParser::read_connections(const std::string& filename) {
     // }
 }
 
-
-// Computes the shortest path between two station IDs and returns it as a list of ID pairs representing segments of the journey
+/**
+ * Computes the shortest path between two station IDs and returns it as a list of ID pairs representing segments of the journey.
+ * @param start The ID of the starting station.
+ * @param end The ID of the destination station.
+ * @return A vector of ID pairs representing the shortest path between the two stations.
+ */
 std::vector<std::pair<uint64_t, uint64_t>> MetroNetworkParser::compute_travel(uint64_t start, uint64_t end) {
-    Station startStation = get_station_by_id(start);
+   Station startStation = get_station_by_id(start);
     // std::cout << "Start station inside compute_travel: " << startStation.name << std::endl;
     try
     {
@@ -119,7 +140,12 @@ std::vector<std::pair<uint64_t, uint64_t>> MetroNetworkParser::compute_travel(ui
     
 }
 
-
+/**
+ * Computes and displays the shortest path between two station IDs.
+ * @param start The ID of the starting station.
+ * @param end The ID of the destination station.
+ * @return A vector of ID pairs representing the shortest path between the two stations.
+ */
 std::vector<std::pair<uint64_t, uint64_t>> MetroNetworkParser::compute_and_display_travel(uint64_t start, uint64_t end) {
     auto path = compute_travel(start, end);
     for (auto& segment : path) {
@@ -130,11 +156,15 @@ std::vector<std::pair<uint64_t, uint64_t>> MetroNetworkParser::compute_and_displ
             std::cout << get_station_by_id(segment.first).name << ", Line :  "<< get_station_by_id(segment.first).line_id << " -> ";
         }
     }
-    return path;
-}
+    return path;}
 
-
-// Returns the station ID given a station name and line
+/**
+ * Returns the station ID given a station name and line.
+ * @param name The name of the station.
+ * @param line The line of the station.
+ * @return The ID of the station.
+ * @throws std::runtime_error if the station ID is not found.
+ */
 uint64_t MetroNetworkParser::get_station_id_by_name_and_line(const std::string& name, const std::string& line) const {
     std::string key = name + "|" + line;
     auto it = name_to_id_map.find(key);
@@ -145,7 +175,12 @@ uint64_t MetroNetworkParser::get_station_id_by_name_and_line(const std::string& 
     throw std::runtime_error("Station ID not found (get_station_id_by_name_and_line)");
 }
 
-// Returns the station name given an ID
+/**
+ * Returns the station name given an ID.
+ * @param id The ID of the station.
+ * @return The name of the station.
+ * @throws std::runtime_error if the station name is not found.
+ */
 std::string MetroNetworkParser::get_station_name_by_id(uint64_t id) const {
     auto it = stations_hashmap.find(id);
     if (it != stations_hashmap.end()) {
@@ -154,7 +189,12 @@ std::string MetroNetworkParser::get_station_name_by_id(uint64_t id) const {
     throw std::runtime_error("Station name not found (get_station_name_by_id)");
 }
 
-// Returns a Station object given an ID
+/**
+ * Returns a Station object given an ID.
+ * @param id The ID of the station.
+ * @return The Station object.
+ * @throws std::runtime_error if the station ID is not found.
+ */
 Station MetroNetworkParser::get_station_by_id(uint64_t id) const {
     auto it = stations_hashmap.find(id);
     if (it != stations_hashmap.end()) {
@@ -163,7 +203,9 @@ Station MetroNetworkParser::get_station_by_id(uint64_t id) const {
     throw std::runtime_error("Station ID not found (get_station_by_id)");
 }
 
-// Print all stations stored in the parser
+/**
+ * Prints all stations stored in the parser.
+ */
 void MetroNetworkParser::print_all_stations() const {
     for (const auto& pair : stations_hashmap) {
         const Station& station = pair.second;
@@ -173,8 +215,13 @@ void MetroNetworkParser::print_all_stations() const {
                   << ", Address: " << station.address
                   << ", Line Name: " << station.line_name << std::endl;
     }
-}
+    }
 
+/**
+ * Searches for stations that match the given input.
+ * @param input The input to search for.
+ * @return A vector of pairs containing the matching station names and lines.
+ */
 std::vector<std::pair<std::string, std::string>> MetroNetworkParser::searchStations(const std::string &input) const {
     std::vector<std::pair<std::string, std::string>> matches;
     std::string lowerInput = input;
@@ -188,8 +235,6 @@ std::vector<std::pair<std::string, std::string>> MetroNetworkParser::searchStati
             matches.emplace_back(pair.second.name, pair.second.line_id); // Add matching station name and line
         }
     }
-    return matches;
-}
-
+    return matches;}
 
 } // namespace travel
