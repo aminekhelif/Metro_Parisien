@@ -114,7 +114,7 @@ std::vector<std::pair<uint64_t, uint64_t>> MetroNetworkParser::compute_travel(ui
     auto path_ids = navigation->getShortestPath(end); // ensure this returns a vector of IDs
 
     std::vector<std::pair<uint64_t, uint64_t>> paths;
-    for (size_t i = 0; i < path_ids.size() - 1; i++) {
+    for (size_t i = 0; i < path_ids.size()  ; i++) {
         paths.emplace_back(path_ids[i], path_ids[i + 1]);
     }
     return paths; // return the correct variable
@@ -124,7 +124,12 @@ std::vector<std::pair<uint64_t, uint64_t>> MetroNetworkParser::compute_travel(ui
 std::vector<std::pair<uint64_t, uint64_t>> MetroNetworkParser::compute_and_display_travel(uint64_t start, uint64_t end) {
     auto path = compute_travel(start, end);
     for (auto& segment : path) {
-        std::cout << get_station_by_id(segment.first).name << " Line :  "<< get_station_by_id(segment.first).line_id << " -> ";
+        if (segment.first == end) {
+            std::cout << get_station_by_id(segment.first).name << ", Line :  "<< get_station_by_id(segment.first).line_id << std::endl;
+            break;
+        }else{
+            std::cout << get_station_by_id(segment.first).name << ", Line :  "<< get_station_by_id(segment.first).line_id << " -> ";
+        }
     }
     return path;
 }
