@@ -1,5 +1,5 @@
-#include "MetroNetworkParser.hpp"
-#include "Navigation.hpp"
+#include "src/MetroNetworkParser.hpp"
+#include "src/Navigation.hpp"
 
 // // Function to normalize the input string by converting it to lowercase and removing punctuation.
 std::string normalize(const std::string &input)
